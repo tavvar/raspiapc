@@ -13,16 +13,23 @@ class JsonFile:
         try:
             fo = open(self.filename, "r")
         except IOError:
+            print("Create File '%s' at '%s'" % (self.filename, os.getcwd()))
             fo = open(self.filename, "w")
             fo.write("{}")
         return fo.close()
     
     
     def deleteFile(self):
-        print "x"
-            
-        
-        
+        try:
+            os.remove(self.filename)
+        except IOError:
+            print("Deletion failed")
+            return False
+        else:
+            print("File '%s' deleted successful" % (self.filename))
+            return True
+        return False
+
     
     def getJson(self):
         try:
@@ -37,17 +44,18 @@ class JsonFile:
         return jsonPython
             
     
-    def addFetch(self, humidity, temperature, dust, ts = "0"):
+    def addFetch(self, humidity, temperature, pm25, pm10, ts = "0"):
         ts = int(time.time())
         try:
+            float(pm25)
+            float(pm10)
             float(humidity)
             float(temperature)
-            float(dust)
         except ValueError:
             dummy = -999
-            humidity = temperature = dust = dummy
+            humidity = temperature = pm25 = pm10 = dummy
             
-        json2add_str = ("{\"%i\" : {\"humidity\" : \"%f\", \"temperature\" : \"%f\", \"dust\" : \"%f\"}}" % (ts, humidity, temperature, dust))
+        json2add_str = ("{\"%i\" : {\"humidity\" : \"%f\", \"temperature\" : \"%f\", \"pm25\" : \"%f\", \"pm10\" : \"%f\"}}" % (ts, humidity, temperature, pm25, pm10))
         #print(json2add_str)
         json2add = json.loads(json2add_str)
         #print(json2add)

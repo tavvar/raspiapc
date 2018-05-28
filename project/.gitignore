@@ -1,0 +1,4 @@
+# Untrack *.json-files
+*.json
+# Untrack *.pyc-files
+*.pyc

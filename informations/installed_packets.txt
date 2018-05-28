@@ -1,1 +1,1 @@
-sudo apt install python-serial python-enum lighttpd
+sudo apt install python-serial python-enum
