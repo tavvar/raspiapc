@@ -95,20 +95,25 @@ def cmd_set_id(id):
     ser.write(construct_command(CMD_DEVICE_ID, [0]*10+[id_l, id_h]))
     read_response()
 
-if __name__ == "__main__":
-    while True:
-        cmd_set_sleep(0)
-        cmd_set_mode(1);
-        time.sleep(2)
-        for t in range(5):
-            values = cmd_query_data();
-            if values is not None:
-                print("PM2.5: ", values[0], ", PM10: ", values[1])
-                time.sleep(2)
+def getAll(measures = 5):
+    cmd_set_sleep(0)
+    cmd_set_mode(1);
+    time.sleep(5)
+    pm25 = 0
+    pm10 = 0
+    for t in range(measures):
+        values = cmd_query_data();
+        if values is not None:
+            print("PM2.5: ", values[0], ", PM10: ", values[1])
+            pm25 += values[0]
+            pm10 += values[1]
+            time.sleep(2)
+    
+    pm25 = (pm25/measures)
+    pm10 = (pm10/measures)
+    cmd_set_mode(0);
+    cmd_set_sleep()
+    return pm25, pm10
 
-        
 
-        print("Going to sleep for 5min...")
-        cmd_set_mode(0);
-        cmd_set_sleep()
-        time.sleep(300)
+#print(getAll())
