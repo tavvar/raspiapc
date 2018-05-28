@@ -2,3 +2,7 @@
 *.json
 # Untrack *.pyc-files
 *.pyc
+
+*.bak
+
+config
