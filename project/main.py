@@ -1,5 +1,5 @@
 import request
-import jsonObject
+import measure
 import time
 import readht
 import readdust
@@ -9,7 +9,7 @@ SENSOR = 22
 PIN = 4
 WAITBTWMEASURES = 10
 
-testobject = jsonObject.JsonFile() 
+testobject = jsonObject.Measure() 
 
 #url = "http://httpbin.org"
 url = "abc"
