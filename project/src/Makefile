@@ -1,10 +1,10 @@
 BUILD="../build/"
 TAR_FILE="apc_build.tar"
+TEMP_FILES=*.pyc *.pyo
 
 clean-pyc:
 	@echo Cleaning temp files!
-	rm -f *.pyc
-	rm -f *.pyo
+	rm -f ${TEMP_FILES}
 	@echo 
 
 clean-build:
@@ -19,3 +19,4 @@ build-tar: clean-build
 	tar -cf ${TAR_FILE} *.py
 	mkdir ${BUILD}
 	mv ${TAR_FILE} ${BUILD}
+	@echo
