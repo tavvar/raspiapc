@@ -13,3 +13,8 @@ https://www.seeedstudio.com/Grove-Dust-Sensor%EF%BC%88PPD42NS%EF%BC%89-p-1050.ht
 
 USB Sensor
 https://zefanjas.de/wie-man-feinstaub-mit-einem-raspberry-pi-messen-kann/
+
+
+
+Bash goto:
+https://stackoverflow.com/questions/9639103/is-there-a-goto-statement-in-bash
