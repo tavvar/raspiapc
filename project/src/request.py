@@ -1,5 +1,5 @@
 import requests
-import urllib2
+import urllib.request
 
 
 def getReq(url, parameters = ""):
@@ -9,6 +9,10 @@ def getReq(url, parameters = ""):
 
 def postReq(url, data = "", parameters = ""):
     res = requests.post(url, data, parameters)
+    return res
+
+def putReq(url, data = "", parameters = ""):
+    res = requests.put(url, data, parameters)
     return res
 
 

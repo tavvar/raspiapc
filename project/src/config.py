@@ -39,7 +39,7 @@ class Config:
         return result
     
     def updateConfig(self,newConfig):
-        if (newConfig is not None) && (newConfig is not ""):
+        if (newConfig is not None):
             try:
                 file = open(self.filename,"w+")
             except (IOError) as err:
@@ -56,6 +56,7 @@ class Config:
             return "abcde"
         else:
             return "http://httpbin.org"
+        
 
     def getMachineId():
         try:

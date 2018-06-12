@@ -1,6 +1,9 @@
-import threading, config, request
+import threading, config, request, measure, readht, readdust
 
 class Scheduler:
+    SENSOR = 22
+    PIN = 4
+    
     url_config = ""
     url_measure = ""
     
@@ -16,31 +19,33 @@ class Scheduler:
     def __init__(self):
         self.lock = threading.Lock()
         self.config_obj = config.Config()
+        self.measure_obj = measure.Measure()
+        
         self.url_config = config_obj.getUrl()
         
     
     def syncConfig(self):
-        if request.isOnline(self.url):
-            response = request.getReq(self.url)
+        if request.isOnline(self.url_config):
+            response = request.getReq(self.url_config)
             response = json.loads(response.text)
             config_str = response['data']
-            config_obj.update(config_str)            
-            return True
+            config_obj.update(config_str)
+            if response.status_code == 200:
+                return True
         return False       
         
         
     
-    def syncMeasures():
-        print("ToDo")
+    def syncMeasures(self):
+        humidity, temperature = readht.getAll(SENSOR,PIN)
+        pm25, pm10 = readdust.getAll(5)
+        measure_obj.addFetch(humidity, temperature, pm25, pm10)
+        if request.isOnline(self.url_measure):
+            response = requests.put(url=self.url_measure, json=self.measure_obj.getJson)           
+            if response.status_code == 200:
+                self.measure_obj.deleteFile()
+                return True
+        return False  
         
-        
-    def newThread(self, method, intervalType):
-        lock = threading.acquire()
-        method()
-        lock = threading.release()
-        if intervalType == "config"
-            time.sleep(int(config_str['intervalConfig']))
-            
-        elif intervalType == "measure"
-            time.sleep(int(config_str['intervalMeasure']))
+
         
