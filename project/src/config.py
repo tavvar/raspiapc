@@ -4,12 +4,12 @@ class Config:
     'Config object for administrating the Pi\'s configuration'
     
     filename = ""
-    config_str = ""
+    configDict = ""
     
     def __init__(self, filename = "config"):
         self.filename = filename
         #blubb = initConfig()
-        #self.config_str = getConfig()
+        self.configDict = self.getConfig()
         
         
 
@@ -19,25 +19,29 @@ class Config:
             json.load(file)
             print("Success init config")
         except (IOError, ValueError) as err:
-            file = open(filename,"w")
-            file.write(json.dumps({'id':getMachineId(),'intervalMeasures':30,'intervalConfig':10}))
+            file = open(self.filename,"w")
+            file.write(json.dumps({'id':self.getMachineId(),'intervalMeasures':30,'intervalConfig':10,'serverUrl':'https://httpbin.org'}))
             print(err)
             print("Standard config has been made.")
         return file.close()
 
+
     def getConfig(self):
         result = ""
+        file = ""
         try:
             file = open(self.filename,"r")
             result = json.load(file)
         except (IOError, ValueError) as err:
-            initConfig(self.filename)
+            self.initConfig()
             file = open(self.filename,"r")
             result = json.load(file)
             print("No config or config wasn't valid JSON so initConfig() has been called!")
         file.close()
+        configDict = result
         return result
-    
+   
+   
     def updateConfig(self,newConfig):
         if (newConfig is not None):
             try:
@@ -58,7 +62,7 @@ class Config:
             return "http://httpbin.org"
         
 
-    def getMachineId():
+    def getMachineId(self):
         try:
             file = open("/etc/machine-id","r")
         except IOError:
