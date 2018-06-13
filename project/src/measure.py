@@ -55,25 +55,34 @@ class Measure:
             dummy = -999
             humidity = temperature = pm25 = pm10 = dummy
             
-        json2add_str = ("{\"%i\" : {\"humidity\" : \"%f\", \"temperature\" : \"%f\", \"pm25\" : \"%f\", \"pm10\" : \"%f\"}}" % (ts, humidity, temperature, pm25, pm10))
-        #print(json2add_str)
-        json2add = json.loads(json2add_str)
+        #json2add_str = ("{\"%i\" : {\"humidity\" : \"%f\", \"temperature\" : \"%f\", \"pm25\" : \"%f\", \"pm10\" : \"%f\"}}" % (ts, humidity, temperature, pm25, pm10))
+        #print(json.loads(json2add_str))
+        #json2add = json.loads(json2add_str)
+        json2add = {'id':123456,'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}
+        json2overwrite = {'data':[{'id':123456,'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}]}
         #print(json2add)
+        update = False
         try:
             fo = open(self.filename, "r+")
             print("Update File '%s'" % (self.filename))
+            update = True
         except IOError:
             self.initFile()
             fo = open(self.filename, "r+")
         data = self.getJson()
-        data.update(json2add)
+        #data.update(json2add)
+        if update:
+            data['data'].append(json2add)
+        else:
+            data = json2overwrite
         json.dump(data, fo)
         fo.close()
         
-            
-    
-#testobject = JsonFile()
-#testobject.addFetch(47.0, 22.5, 0.75)
+
+
+
+m = Measure()
+m.addFetch(10.0,20.5,1.8,2.4)
 
             
         
