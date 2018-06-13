@@ -11,7 +11,7 @@ class Scheduler:
     measure_obj = ""
     
     url_config = "offline"
-    url_measure = TEMPURL
+    url_measure = "http://wasdabyx.de:8080"
     
     
     
@@ -43,7 +43,7 @@ class Scheduler:
         if request.isOnline("https://httpbin.org"):
             response = requests.put(url=self.url_measure, json=self.measure_obj.getJson())
             print("Debug: Status Code = %i" % (response.status_code))
-            #print("Debug: Response.data = %s" % (response.data))
+            print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
                 self.measure_obj.deleteFile()
                 return True

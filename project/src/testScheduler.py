@@ -12,7 +12,7 @@ s = scheduler.Scheduler()
 measureThread = threading.Thread(target=s.syncMeasuresInterval)
 configThread = threading.Thread(target=s.syncConfigInterval)
 
-measureThread.start()
-configThread.start()
-    
+#measureThread.start()
+#configThread.start()
+s.syncMeasures(1)   
 

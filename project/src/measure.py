@@ -26,7 +26,7 @@ class Measure:
             print("Deletion failed")
             return False
         else:
-            print("File '%s' deleted successful" % (self.filename))
+            print("File '%s' deleted successfully" % (self.filename))
             return True
         return False
 
