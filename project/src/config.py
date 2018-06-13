@@ -8,8 +8,8 @@ class Config:
     
     def __init__(self, filename = "config"):
         self.filename = filename
-        initConfig()
-        self.config_str = getConfig()
+        #blubb = initConfig()
+        #self.config_str = getConfig()
         
         
 
@@ -52,7 +52,7 @@ class Config:
     
     def getUrl(self,platzhalter=True):
         #what are parts of the url?
-        if Platzhalter:
+        if platzhalter:
             return "abcde"
         else:
             return "http://httpbin.org"

@@ -1,11 +1,12 @@
-import threading, config, request, measure, readht, readdust
+import threading, config, request, measure, readht, readdust, requests
 
 class Scheduler:
     SENSOR = 22
     PIN = 4
+    TEMPURL = "https://httpbin.org/put"
     
     url_config = ""
-    url_measure = ""
+    url_measure = TEMPURL
     
     intervalMeasures = 0
     intervalConfig = 0
@@ -21,7 +22,7 @@ class Scheduler:
         self.config_obj = config.Config()
         self.measure_obj = measure.Measure()
         
-        self.url_config = config_obj.getUrl()
+        self.url_config = self.config_obj.getUrl()
         
     
     def syncConfig(self):
@@ -37,11 +38,13 @@ class Scheduler:
         
     
     def syncMeasures(self):
-        humidity, temperature = readht.getAll(SENSOR,PIN)
-        pm25, pm10 = readdust.getAll(5)
-        measure_obj.addFetch(humidity, temperature, pm25, pm10)
-        if request.isOnline(self.url_measure):
-            response = requests.put(url=self.url_measure, json=self.measure_obj.getJson)           
+        humidity, temperature = readht.getAll(self.SENSOR, self.PIN)
+        pm25, pm10 = readdust.getAll(1)
+        self.measure_obj.addFetch(humidity, temperature, pm25, pm10)
+        if request.isOnline("https://httpbin.org"):
+            response = requests.put(url=self.url_measure, json=self.measure_obj.getJson())
+            print("Debug: Status Code = %i" % (response.status_code))
+            print("Debug: Response.data = %s" % (response.data))
             if response.status_code == 200:
                 self.measure_obj.deleteFile()
                 return True

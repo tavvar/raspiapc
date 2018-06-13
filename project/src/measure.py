@@ -61,6 +61,7 @@ class Measure:
         #print(json2add)
         try:
             fo = open(self.filename, "r+")
+            print("Update File '%s'" % (self.filename))
         except IOError:
             self.initFile()
             fo = open(self.filename, "r+")

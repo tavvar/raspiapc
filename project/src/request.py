@@ -1,5 +1,5 @@
 import requests
-import urllib.request
+import urllib2
 
 
 def getReq(url, parameters = ""):

@@ -4,15 +4,16 @@ import time
 import readht
 import readdust
 import os
+import json
 
 SENSOR = 22
 PIN = 4
 WAITBTWMEASURES = 10
 
-testobject = jsonObject.Measure() 
+testobject = measure.Measure() 
 
 #url = "http://httpbin.org"
-url = "abc"
+url = "https://google.com"
 
 while True:
     print("fetching humidity and temperature")
@@ -23,9 +24,10 @@ while True:
     print(">>> pm25: %f, pm10: %f" % (pm25, pm10))
     testobject.addFetch(humidity, temperature, pm25, pm10)
     print("Add values to '%s/%s'" % (os.getcwd(), testobject.filename))
-    data = jsonObject.json.dumps(testobject.getJson())
+    data = json.dumps(testobject.getJson())
     #print(request.sendData(url,data))
-    if request.sendData(url,data):
+    if request.isOnline(url):
+        print("Just a dummy send")
         print("Data was sent to %s" % (url))
         testobject.deleteFile()
     else:
