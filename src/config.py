@@ -20,7 +20,7 @@ class Config:
             print("Success init config")
         except (IOError, ValueError) as err:
             file = open(self.filename,"w")
-            file.write(json.dumps({'id':self.getMachineId(),'intervalMeasures':30,'intervalConfig':10,'serverUrl':'https://httpbin.org'}))
+            file.write(json.dumps({'id':12345,'intervall':30,'url':'http://wasdabyx.de:8080'}))
             print(err)
             print("Standard config has been made.")
         return file.close()
