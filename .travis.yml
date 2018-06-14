@@ -8,3 +8,4 @@ install:
 
 script:
   - python src/config.py
+  - python src/measure.py
