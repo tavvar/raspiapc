@@ -7,6 +7,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python src/config.py
-  - python src/measure.py
-  - python src/request.py
+  - python src/measure.test.py
