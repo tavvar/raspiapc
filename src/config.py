@@ -43,15 +43,18 @@ class Config:
    
    
     def updateConfig(self,newConfig):
-        if (newConfig is not None):
-            try:
-                file = open(self.filename,"w+")
-            except (IOError) as err:
-                print("Not able to create or open file. Error -> %s" % (err))
-            file.write(newConfig)                
-            file.close()
-            return True
-        return False
+        try:
+            file = open(self.filename,"w+")
+        except (IOError) as err:
+            print("Not able to create or open file. Error -> %s" % (err))
+            return False
+        try:
+            json.loads(newConfig)
+        except ValueError as valerr:
+            return False
+        file.write(newConfig)                
+        file.close()
+        return True
         
 
     def getMachineId(self):
