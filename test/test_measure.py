@@ -13,7 +13,11 @@ class TestMeasure(unittest.TestCase):
         
     @classmethod    
     def tearDown(cls):
-        os.remove(cls.m.filename)
+        try:
+            file = open(cls.m.filename, 'r')
+            os.remove(cls.m.filename)
+        except IOError as io:
+            print("ok")
             
     def test_addFetchFailWrongParam(self):
         self.assertFalse(self.m.addFetch(humidity="String", temperature=25.5, pm25=5.0, pm10=10.0, id="abc123", ts=self.ts))
