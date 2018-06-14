@@ -38,7 +38,7 @@ class Config:
             result = json.load(file)
             print("No config or config wasn't valid JSON so initConfig() has been called!")
         file.close()
-        configDict = result
+        self.configDict = result
         return result
    
    
