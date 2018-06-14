@@ -1,0 +1,1 @@
+Search.setIndex({docnames:["index"],envversion:52,filenames:["index.rst"],objects:{},objnames:{},objtypes:{},terms:{index:0,page:0,search:0},titles:["Welcome to APC RasPi3 Module's documentation!"],titleterms:{apc:0,document:0,indic:0,modul:0,raspi3:0,tabl:0,welcom:0}})
