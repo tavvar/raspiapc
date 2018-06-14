@@ -53,14 +53,6 @@ class Config:
             return True
         return False
         
-    
-    def getUrl(self,platzhalter=True):
-        #what are parts of the url?
-        if platzhalter:
-            return "abcde"
-        else:
-            return "http://httpbin.org"
-        
 
     def getMachineId(self):
         try:

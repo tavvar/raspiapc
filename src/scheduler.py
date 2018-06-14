@@ -10,7 +10,7 @@ class Scheduler:
     config_obj = ""
     measure_obj = ""
     
-    url_config = "http://offline"
+    url_config = "http://wasdabyx.de:8080/config"
     url_measure = "http://offline"
     
     
@@ -24,10 +24,11 @@ class Scheduler:
         
     
     def syncConfig(self):
-        self.url_config = self.config_obj.configDict['serverUrl']
+        #self.url_config = self.config_obj.configDict['serverUrl']
         if request.isOnline(self.url_config):
-            response = request.getReq(self.url_config)
+            response = request.getReq(self.url_config, params=self.config_obj.configDict['identifier'])
             if response.status_code == 200:
+                print("Response data: '%s'" % (response.text))
                 try:
                     response = json.loads(response.text)
                 except ValueError as valerr:
