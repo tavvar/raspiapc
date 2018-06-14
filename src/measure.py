@@ -54,13 +54,9 @@ class Measure:
         except ValueError:
             dummy = -999
             humidity = temperature = pm25 = pm10 = dummy
-            
-        #json2add_str = ("{\"%i\" : {\"humidity\" : \"%f\", \"temperature\" : \"%f\", \"pm25\" : \"%f\", \"pm10\" : \"%f\"}}" % (ts, humidity, temperature, pm25, pm10))
-        #print(json.loads(json2add_str))
-        #json2add = json.loads(json2add_str)
+            return False
         json2add = {'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}
         json2overwrite = {'id':id,'data':[{'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}]}
-        #print(json2add)
         update = False
         try:
             fo = open(self.filename, "r+")
@@ -70,13 +66,13 @@ class Measure:
             self.initFile()
             fo = open(self.filename, "r+")
         data = self.getJson()
-        #data.update(json2add)
         if update:
             data['data'].append(json2add)
         else:
             data = json2overwrite
         json.dump(data, fo)
         fo.close()
+        return True
         
 
 

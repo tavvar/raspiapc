@@ -1,5 +1,6 @@
-BUILD="../build/"
-TAR_FILE="apc.tar.gz"
+BUILD=../build/
+TEST=../test/
+TAR_FILE=apc.tar.gz
 TEMP_FILES=*.pyc *.pyo
 TEMP_DIRS=__pycache__
 ADAFRUIT=../lib/Adafruit_Python_DHT
