@@ -2,6 +2,7 @@
 
 # VARS
 DESTINATION="./test/"
+DEST_HELPER='raspiapc/installer/helper.py'
 
 
 function jumpto
@@ -59,7 +60,16 @@ while true; do
     esac
 done
 
-python helper.py config $url $identifier $intervalM $intervalC
+
+echo ""
+echo "Cloning git repos..."
+echo ""
+
+cd
+python ${DEST_HELPER} config $url $identifier $intervalM $intervalC
+
+#git clone https://github.com/tavvar/raspiapc.git
+#git clone https://github.com/adafruit/Adafruit_Python_DHT.git
 
 
 # Create destination folder
