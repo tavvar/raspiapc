@@ -1,4 +1,4 @@
-import unittest, time, os, sys
+import unittest, time, os, sys, mock
 from src import measure 
 
 class TestMeasure(unittest.TestCase):
@@ -14,8 +14,8 @@ class TestMeasure(unittest.TestCase):
     @classmethod    
     def tearDown(cls):
         try:
-            file = open(cls.m.filename, 'r')
-            os.remove(cls.m.filename)
+            if os.path.isfile(cls.m.filename):
+                os.remove(cls.m.filename)
         except IOError as io:
             print("ok")
             
@@ -29,6 +29,4 @@ class TestMeasure(unittest.TestCase):
     
 
 if __name__ == '__main__':
-    #unittest.main()
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestMeasure)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

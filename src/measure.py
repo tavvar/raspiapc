@@ -20,14 +20,16 @@ class Measure:
     
     
     def deleteFile(self):
-        try:
-            os.remove(self.filename)
-        except IOError:
-            print("Deletion failed")
-            return False
-        else:
-            print("File '%s' deleted successfully" % (self.filename))
-            return True
+        if(os.path.isfile(self.filename)): 
+            try:
+                os.remove(self.filename)
+            except IOError:
+                print("Deletion failed")
+                return False
+            else:
+                print("File '%s' deleted successfully" % (self.filename))
+                return True
+        print("Deletion failed. No file '%s' found!" % (self.filename))
         return False
 
     
