@@ -8,7 +8,6 @@ filename = sys.argv[1]
 url = sys.argv[2]
 id = sys.argv[3]
 im = sys.argv[4]
-ic = sys.argv[5]
 
 fo = open(filename, 'w+')
-fo.write(json.dumps({'id':id,'intervalMeasures':im,'intervalConfig':ic,'serverUrl':url}))
+fo.write(json.dumps({'id':id,'intervall':im,'url':url}))

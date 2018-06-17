@@ -2,7 +2,7 @@
 
 # VARS
 DESTINATION="./test/"
-DEST_HELPER='raspiapc/installer/helper.py'
+DEST_HELPER='helper.py'
 
 
 function jumpto
@@ -24,22 +24,23 @@ _identifier:
 echo ""
 echo "Identifier [Followed by ENTER]: "
 read identifier
-
+if [ -z "$identifier" ]; then
+    echo "Please type in something"
+    jumpto _identifier
+fi
 
 _url:
 echo ""
-echo "URL of APC Server [Followed by ENTER]: "
+echo "URL of APC Server (Standard: http://wasdabyx.de:8080) [Followed by ENTER]: "
 read url
+test -z "$url" && (url = "http://wasdabyx.de:8080")
 
-_intervalM:
+_interval:
 echo ""
-echo "Interval of syncing measures [Followed by ENTER]: "
-read intervalM
+echo "Interval of syncing measures in minutes (Standard: 10)  [Followed by ENTER]: "
+read interval
+test -z "$interval" && (interval = "10")
 
-_intervalC:
-echo ""
-echo "Interval of syncing config [Followed by ENTER]: "
-read intervalC
 
 _check:
 echo ""
@@ -47,8 +48,7 @@ echo "########################################"
 echo "Please check all of your inputs:"
 echo -e "ID: \t\t\t'$identifier'"
 echo -e "URL: \t\t\t'$url'"
-echo -e "Measuring interval: \t'$intervalM'"
-echo -e "Configuration interval: '$intervalC'"
+echo -e "Measuring interval: \t'$interval'"
 
 while true; do
     echo ""
@@ -66,7 +66,7 @@ echo "Cloning git repos..."
 echo ""
 
 cd
-python ${DEST_HELPER} config $url $identifier $intervalM $intervalC
+python ${DEST_HELPER} config $url $identifier $interval
 
 #git clone https://github.com/tavvar/raspiapc.git
 #git clone https://github.com/adafruit/Adafruit_Python_DHT.git
