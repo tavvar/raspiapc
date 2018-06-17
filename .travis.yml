@@ -5,7 +5,7 @@ cache: pip
 
 install:
   - pip install -r requirements.txt
-  - pip install --user mock_import
+  - pip install mock_import
 
 script:
   - python -m unittest discover -v
