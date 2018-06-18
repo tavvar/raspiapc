@@ -9,10 +9,6 @@ class Scheduler:
     config_obj = ""
     measure_obj = ""
     
-    #url_config = "http://wasdabyx.de:8080/config"
-    #url_measure = "http://offline"
-    
-    
     
     def __init__(self):
         self.lock = threading.Lock()
@@ -59,7 +55,7 @@ class Scheduler:
     def syncMeasures(self, measures=5):
         _url = self.config_obj.getUrl()
         _id = self.config_obj.getId()
-        humidity, temperature = readht.getAll(self.SENSOR, self.PIN)
+        humidity, temperature = readht.getAll(self.SENSOR, self.PIN, measures)
         pm25, pm10 = readdust.getAll(measures)
         #humidity = temperature = pm25 = pm10 = 10.0
         self.measure_obj.addFetch(humidity, temperature, pm25, pm10, _id)
@@ -92,7 +88,7 @@ class Scheduler:
             id = self.config_obj.getId()
             print("Syncing measures...")
             self.syncMeasures(measures)
-            wait = self.config_obj.getInterval()
+            wait = self.config_obj.getInterval()*4
             print("Syncing measures sleeps %i seconds\n" % (wait))
             self.lock.release()
             time.sleep(wait)

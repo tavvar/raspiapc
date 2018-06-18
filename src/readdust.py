@@ -96,6 +96,7 @@ def cmd_set_id(id):
     read_response()
 
 def getAll(measures = 5):
+    print("   SDS011 sensor:")
     cmd_set_sleep(0)
     cmd_set_mode(1);
     time.sleep(5)
@@ -111,6 +112,7 @@ def getAll(measures = 5):
     
     pm25 = (pm25/measures)
     pm10 = (pm10/measures)
+    print("Averages: PM2.5 = ", pm25, ", PM10 = ", pm10)
     cmd_set_mode(0);
     cmd_set_sleep()
     return pm25, pm10
