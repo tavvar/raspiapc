@@ -1,4 +1,4 @@
-import threading, time, config, measure, readht, readdust, requests, json, urllib2
+import threading, time, config, measure, readht, readdust, requests, json, urllib2, Queue
 
 class Scheduler:
     SENSOR = 22
@@ -20,8 +20,8 @@ class Scheduler:
     def isOnline(self,url):
         try:
             r = requests.get(url)
-        except Error as err:
-            print("Url: '%s' unreachable." % (url))
+        except IOError as err:
+            print("Url '%s' unreachable. Using local file '%s'" % (url, self.config_obj.filename))
             return False
         return True
 ##        try:
@@ -55,17 +55,28 @@ class Scheduler:
     def syncMeasures(self, measures=5):
         _url = self.config_obj.getUrl()
         _id = self.config_obj.getId()
-        humidity, temperature = readht.getAll(self.SENSOR, self.PIN, measures)
-        pm25, pm10 = readdust.getAll(measures)
-        #humidity = temperature = pm25 = pm10 = 10.0
+        que = Queue.Queue()
+        args_ht = [self.SENSOR, self.PIN, measures]
+        ht = threading.Thread(target=lambda q, arg1: q.put(readht.getAll(arg1)), args=(que, measures))
+        dust = threading.Thread(target=lambda q, arg1: q.put(readdust.getAll(arg1)), args=(que, measures))
+        ht.start()
+        dust.start()       
+        ht.join()
+        dust.join()
+        result = que.get()
+        humidity, temperature = result[0], result[1]
+        result = que.get()
+        pm25, pm10 = result[0], result[1]
         self.measure_obj.addFetch(humidity, temperature, pm25, pm10, _id)
         if self.isOnline(_url):
             response = requests.put(url=_url, json=self.measure_obj.getJson())
-            print("Debug: Status Code = %i" % (response.status_code))
-            print("Debug: Response.text = %s" % (response.text))
+            #print("Debug: Status Code = %i" % (response.status_code))
+            #print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
+                print("Sending file successfully.")
                 self.measure_obj.deleteFile()
                 return True
+        print("File could not be sent due to failing connectivity. Measures are cached locally in file '%s' instead." % (self.measure_obj.filename))
         return False
     
     
@@ -76,7 +87,8 @@ class Scheduler:
             print("Syncing config...")
             self.syncConfig()
             wait = 15
-            print("Syncing config sleeps %i seconds\n" % (wait))
+            waitm = wait/60
+            print("Syncing config sleeps %i seconds / %f minutes\n" % (wait, waitm))
             self.lock.release()
             time.sleep(wait)
         
@@ -88,8 +100,9 @@ class Scheduler:
             id = self.config_obj.getId()
             print("Syncing measures...")
             self.syncMeasures(measures)
-            wait = self.config_obj.getInterval()*4
-            print("Syncing measures sleeps %i seconds\n" % (wait))
+            wait = self.config_obj.getInterval()*60
+            waitm = wait/60
+            print("Syncing measures sleeps %i seconds / %f minutes\n" % (wait, waitm))
             self.lock.release()
             time.sleep(wait)
         

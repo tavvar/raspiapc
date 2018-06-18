@@ -96,7 +96,6 @@ def cmd_set_id(id):
     read_response()
 
 def getAll(measures = 5):
-    print("   SDS011 sensor:")
     cmd_set_sleep(0)
     cmd_set_mode(1);
     time.sleep(5)
@@ -105,17 +104,18 @@ def getAll(measures = 5):
     for t in range(measures):
         values = cmd_query_data();
         if values is not None:
-            print("PM2.5: ", values[0], ", PM10: ", values[1])
+            print("SDS011\t-> PM2.5: ", values[0], ", PM10: ", values[1])
             pm25 += values[0]
             pm10 += values[1]
             time.sleep(2)
     
     pm25 = (pm25/measures)
     pm10 = (pm10/measures)
-    print("Averages: PM2.5 = ", pm25, ", PM10 = ", pm10)
+    print("SDS011\t-> Averages: PM2.5 = ", pm25, ", PM10 = ", pm10)
     cmd_set_mode(0);
     cmd_set_sleep()
-    return pm25, pm10
+    result = [pm25,pm10]
+    return result
 
 
 #print(getAll())
