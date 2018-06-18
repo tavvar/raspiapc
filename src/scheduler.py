@@ -1,17 +1,16 @@
-import threading, time, config, request, measure, readht, readdust, requests, json
+import threading, time, config, measure, readht, readdust, requests, json, urllib2
 
 class Scheduler:
     SENSOR = 22
     PIN = 4
-    TEMPURL = "http://wasdabyx.de:8080"
     
     lock = ""
     
     config_obj = ""
     measure_obj = ""
     
-    url_config = "http://wasdabyx.de:8080/config"
-    url_measure = "http://offline"
+    #url_config = "http://wasdabyx.de:8080/config"
+    #url_measure = "http://offline"
     
     
     
@@ -20,34 +19,52 @@ class Scheduler:
         self.config_obj = config.Config()
         self.measure_obj = measure.Measure()
         
-        self.url_config = self.config_obj.getUrl()
-        
+        #self.url_config = self.config_obj.getUrl()
+       
+    def isOnline(self,url):
+        try:
+            r = requests.get(url)
+        except Error as err:
+            print("Url: '%s' unreachable." % (url))
+            return False
+        return True
+##        try:
+##            urllib2.urlopen(url, timeout=1)
+##            return True
+##        except urllib2.URLError as err: 
+##            return False
+##        except ValueError as valerr:
+##            return False
+    
     
     def syncConfig(self):
-        #self.url_config = self.config_obj.configDict['serverUrl']
-        if request.isOnline(self.url_config):
-            response = request.getReq(self.url_config, params=self.config_obj.configDict['identifier'])
+        _url = self.config_obj.getUrl()+"/config"
+        _id = "id="+str(self.config_obj.getId())
+        if self.isOnline(self.config_obj.getUrl()):
+            response = requests.get(url=_url, params=_id)
             if response.status_code == 200:
-                print("Response data: '%s'" % (response.text))
+                print("Response data from %s: '%s'" % (_url,response.text))
                 try:
-                    response = json.loads(response.text)
+                    config_str = json.dumps(response.json())
                 except ValueError as valerr:
                     print("No JSON in response. Config wasn't updated.")
                     return False
-                self.config_str = response['data']
-                self.config_obj.update(config_str)
-                return True
+                else:
+                    self.config_obj.updateConfig(config_str)
+                    return True
         return False       
         
         
     
-    def syncMeasures(self, measures=5, id=12345):
-        self.url_measure = self.config_obj.configDict['serverUrl']
+    def syncMeasures(self, measures=5):
+        _url = self.config_obj.getUrl()
+        _id = self.config_obj.getId()
         humidity, temperature = readht.getAll(self.SENSOR, self.PIN)
         pm25, pm10 = readdust.getAll(measures)
-        self.measure_obj.addFetch(humidity, temperature, pm25, pm10, id)
-        if request.isOnline(self.url_measure):
-            response = requests.put(url=self.url_measure, json=self.measure_obj.getJson())
+        #humidity = temperature = pm25 = pm10 = 10.0
+        self.measure_obj.addFetch(humidity, temperature, pm25, pm10, _id)
+        if self.isOnline(_url):
+            response = requests.put(url=_url, json=self.measure_obj.getJson())
             print("Debug: Status Code = %i" % (response.status_code))
             print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
@@ -62,19 +79,20 @@ class Scheduler:
             self.config_obj.getConfig()
             print("Syncing config...")
             self.syncConfig()
-            wait = self.config_obj.configDict['intervalConfig']
+            wait = 15
             print("Syncing config sleeps %i seconds\n" % (wait))
             self.lock.release()
             time.sleep(wait)
         
     
-    def syncMeasuresInterval(self, measures=5, id=12345):
+    def syncMeasuresInterval(self, measures=5):
         while True:
             self.lock.acquire()
             self.config_obj.getConfig()
+            id = self.config_obj.getId()
             print("Syncing measures...")
-            self.syncMeasures(measures, id)
-            wait = self.config_obj.configDict['intervalMeasures']
+            self.syncMeasures(measures)
+            wait = self.config_obj.getInterval()
             print("Syncing measures sleeps %i seconds\n" % (wait))
             self.lock.release()
             time.sleep(wait)

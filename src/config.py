@@ -8,7 +8,6 @@ class Config:
     
     def __init__(self, filename = "config"):
         self.filename = filename
-        #blubb = initConfig()
         self.configDict = self.getConfig()
         
         
@@ -51,6 +50,7 @@ class Config:
         try:
             json.loads(newConfig)
         except ValueError as valerr:
+            print("No JSON")
             return False
         file.write(newConfig)                
         file.close()
@@ -66,4 +66,13 @@ class Config:
         id = id.rstrip()
         file.close()
         return id
+    
+    def getId(self):
+        return self.configDict['id']
+    
+    def getUrl(self):
+        return self.configDict['url']
+    
+    def getInterval(self):
+        return self.configDict['intervall']
     
