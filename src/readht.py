@@ -17,15 +17,23 @@ def getAllDepreciated(sensor, pin):
 def getAll(sensor, pin, measures):
     print("   DHT22 sensor:")
     humidity = temperature = 0.0
+    false_m_h = 0
+    false_m_t = 0
     for t in range(measures):
         h, t = Adafruit_DHT.read_retry(sensor, pin)
-        if (h is not None) & (t is not None):
+        if (h is not None) and (t is not None):
             print("Humidity: ", h, ", Temperature: ", t)
-            humidity += h
-            temperature += t
+            if (0 <= h <= 100):
+                humidity += h
+            else:
+                false_m_h += 1
+            if (-80 <= t <= 80):
+                temperature += t
+            else:
+                false_m_t += 1
             time.sleep(2)
-    humidity = humidity/measures
-    temperature = temperature/measures
+    humidity = humidity/(measures-false_m_h)
+    temperature = temperature/(measures-false_m_t)
     print("Averages: Humidity = %f, Temperature = %f" % (humidity, temperature))
     return humidity, temperature
 

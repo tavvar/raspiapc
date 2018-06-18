@@ -1,7 +1,5 @@
 import scheduler, threading
 
-
-
 s = scheduler.Scheduler()
 
 ##print("Try syncConfig()")
@@ -14,6 +12,8 @@ configThread = threading.Thread(target=s.syncConfigInterval)
 
 configThread.start()
 measureThread.start()
+        
+
 #s.syncMeasures(1)
 #s.syncConfig()
 
