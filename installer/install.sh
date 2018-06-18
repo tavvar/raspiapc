@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # VARS
-DESTINATION="./test/"
-DEST_HELPER='helper.py'
+DESTINATION=$HOME"/.apc"
+DESTINATION_FILE="apc.tar.gz"
+DEST_HELPER="helper.py"
+RELEASE="https://github.com/tavvar/raspiapc/releases/download/0.0.1/apc_0.0.1.tar.gz"
 
 
 function jumpto
@@ -23,8 +25,8 @@ jumpto _identifier
 _identifier:
 echo ""
 echo "Identifier [Followed by ENTER]: "
-read identifier
-if [ -z "$identifier" ]; then
+read IDENTIFIER
+if [ -z "$IDENTIFIER" ]; then
     echo "Please type in something"
     jumpto _identifier
 fi
@@ -32,23 +34,27 @@ fi
 _url:
 echo ""
 echo "URL of APC Server (Standard: http://wasdabyx.de:8080) [Followed by ENTER]: "
-read url
-test -z "$url" && (url = "http://wasdabyx.de:8080")
+read URL
+if [ -z "$URL" ]; then
+    URL="http://wasdabyx.de:8080";
+fi
 
 _interval:
 echo ""
 echo "Interval of syncing measures in minutes (Standard: 10)  [Followed by ENTER]: "
-read interval
-test -z "$interval" && (interval = "10")
+read INTERVAL
+if [ -z "$INTERVAL" ]; then
+    INTERVAL="10";
+fi
 
 
 _check:
 echo ""
 echo "########################################"
 echo "Please check all of your inputs:"
-echo -e "ID: \t\t\t'$identifier'"
-echo -e "URL: \t\t\t'$url'"
-echo -e "Measuring interval: \t'$interval'"
+echo -e "ID: \t\t\t'$IDENTIFIER'"
+echo -e "URL: \t\t\t'$URL'"
+echo -e "Measuring interval: \t'$INTERVAL'"
 
 while true; do
     echo ""
@@ -62,18 +68,41 @@ done
 
 
 echo ""
-echo "Cloning git repos..."
+echo "Initialize 'config'..."
 echo ""
 
-cd
-python ${DEST_HELPER} config $url $identifier $interval
+python ${DEST_HELPER} config $URL $IDENTIFIER $INTERVAL
 
-#git clone https://github.com/tavvar/raspiapc.git
-#git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+echo ""
+
+rm -rf ${DESTINATION} --verbose
+rm -rf ${HOME}/${DESTINATION_FILE}${DESTINATION} --verbose
+
+wget -O ${HOME}/${DESTINATION_FILE} ${RELEASE} --limit-rate=100k
+echo ""
+
+# Extract the archive
+mkdir ${DESTINATION} --verbose
+echo ""
+tar -xzf ${HOME}/${DESTINATION_FILE} -C ${DESTINATION} --verbose
+
+echo ""
+mv config ${DESTINATION} --verbose
+
+# Requirements
+echo ""
+echo "Installing requirements"
+pip install --user requests
+
+# install Adafruit lib
+echo ""
+echo "Trying to install the Adafruit DHT library..."
+sudo python ${DESTINATION}/lib/Adafruit_Python_DHT/setup.py install
 
 
-# Create destination folder
-#mkdir -p ${DESTINATION}
+# Adding program to autostart
+
+# Starting program
 
 echo ""
 echo "Installation complete."
