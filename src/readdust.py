@@ -103,7 +103,7 @@ def getAll(measures = 5):
     pm10 = 0
     for t in range(measures):
         values = cmd_query_data();
-        if values is not None:
+        if values is not None and values[0]>0 and values[1]>0:
             print("SDS011\t-> PM2.5: ", values[0], ", PM10: ", values[1])
             pm25 += values[0]
             pm10 += values[1]
