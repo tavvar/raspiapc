@@ -4,7 +4,7 @@
 DESTINATION=$HOME"/.apc"
 DESTINATION_FILE="apc.tar.gz"
 DEST_HELPER="helper.py"
-RELEASE="https://github.com/tavvar/raspiapc/releases/download/0.0.2/apc_0.0.2.tar.gz"
+RELEASE="https://github.com/tavvar/raspiapc/releases/latest"
 
 
 function jumpto
@@ -77,11 +77,25 @@ while true; do
     esac
 done
 
+# Requirements
+echo ""
+echo "Installing requirements"
+echo ""
+echo "First install pip"
+sudo apt-get install python-pip
+echo ""
+echo "And now the pip requirements"
+pip install pyserial
+echo ""
+sudo apt-get install curl wget
+
+sleep 1
+
 
 echo ""
 echo "Initialize 'config'..."
 echo ""
-sleep 3
+sleep 2
 
 echo "Make the config file..."
 python ${DEST_HELPER} config $URL $IDENTIFIER $INTERVAL
@@ -99,7 +113,11 @@ echo "Get the Files from APC Repository..."
 sleep 1.5
 echo ""
 
-wget -O ${HOME}/${DESTINATION_FILE} ${RELEASE} --limit-rate=100k
+
+
+dl=$(curl -s https://api.github.com/repos/tavvar/raspiapc/releases/latest | \jq --raw-output '.assets[0] | .browser_download_url')
+wget -O ${HOME}/${DESTINATION_FILE} $dl --limit-rate=100k
+#wget -O ${HOME}/${DESTINATION_FILE} ${RELEASE} --limit-rate=100k
 echo ""
 
 echo "Extract files and move them..."
@@ -114,18 +132,6 @@ echo "Remove old file..."
 rm -f ${HOME}/${DESTINATION_FILE}
 
 sleep 1.5
-
-# Requirements
-echo ""
-echo "Installing requirements"
-echo ""
-echo "First install pip"
-sudo apt-get install python-pip
-echo ""
-echo "And now the pip requirements"
-pip install pyserial
-
-sleep 1
 
 # install Adafruit lib
 echo ""
