@@ -18,7 +18,7 @@ function jumpto
 
 OS_VERSION=$(< /etc/os-release)
 RASPI=0
-if [[ $OS_VERSION = *"mint"* ]]; then
+if [[ $OS_VERSION = *"raspbian"* ]]; then
   RASPI=0
 else
   RASPI=1
@@ -118,7 +118,12 @@ sleep 1.5
 # Requirements
 echo ""
 echo "Installing requirements"
-pip install --user requests
+echo ""
+echo "First install pip"
+sudo apt-get install python-pip
+echo ""
+echo "And now the pip requirements"
+pip install pyserial
 
 sleep 1
 
