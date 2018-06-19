@@ -16,6 +16,17 @@ function jumpto
 }
 
 
+OS_VERSION=$(< /etc/os-release)
+RASPI=0
+if [[ $OS_VERSION = *"mint"* ]]; then
+  RASPI=0
+else
+  RASPI=1
+  echo "Sorry, this is no Raspberry. Bye bye!"
+  exit 1
+fi
+
+
 echo ""
 echo "Welcome to the 'Air Pollution Control'. This script will guide you through the installation of your Raspberry Pi"
 echo ""
@@ -93,6 +104,7 @@ mv config ${DESTINATION} --verbose
 echo ""
 echo "Installing requirements"
 pip install --user requests
+
 
 # install Adafruit lib
 echo ""

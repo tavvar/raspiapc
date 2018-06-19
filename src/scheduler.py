@@ -1,4 +1,5 @@
-import threading, time, config, measure, readht, readdust, requests, json, urllib2, Queue
+import threading, time, config, measure, readht, readdust, requests, json, Queue
+#import urllib2
 
 class Scheduler:
     SENSOR = 22
