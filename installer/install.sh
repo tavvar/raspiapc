@@ -87,7 +87,7 @@ echo "First install pip"
 sudo apt-get install python-pip
 echo ""
 echo "And now the pip requirements"
-pip install pyserial
+pip install pyserial requests
 echo ""
 echo "Apt-get dependecies:"
 sudo apt-get install curl wget jq build-essential python-dev
