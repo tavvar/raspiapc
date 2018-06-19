@@ -81,17 +81,28 @@ done
 echo ""
 echo "Initialize 'config'..."
 echo ""
+sleep 3
 
+echo "Make the config file..."
 python ${DEST_HELPER} config $URL $IDENTIFIER $INTERVAL
 
+sleep 2
 echo ""
+echo "Clean the installation path"
 
 rm -rf ${DESTINATION} --verbose
 rm -rf ${HOME}/${DESTINATION_FILE}${DESTINATION} --verbose
+sleep 1
+
+echo ""
+echo "Get the Files from APC Repository..."
+sleep 1.5
+echo ""
 
 wget -O ${HOME}/${DESTINATION_FILE} ${RELEASE} --limit-rate=100k
 echo ""
 
+echo "Extract files and move them..."
 # Extract the archive
 mkdir ${DESTINATION} --verbose
 echo ""
@@ -99,12 +110,17 @@ tar -xzf ${HOME}/${DESTINATION_FILE} -C ${DESTINATION} --verbose
 
 echo ""
 mv config ${DESTINATION} --verbose
+echo "Remove old file..."
+rm -f ${HOME}/${DESTINATION_FILE}
+
+sleep 1.5
 
 # Requirements
 echo ""
 echo "Installing requirements"
 pip install --user requests
 
+sleep 1
 
 # install Adafruit lib
 echo ""
