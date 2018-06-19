@@ -150,15 +150,15 @@ sleep 1
 # Adding program to autostart
 while true; do
     echo ""
-    read -p "Are your inputs correct? [Y/n]" yn
-    case $yn in
-        [Y] ) jumpto _autostart;;
+    read -p "Are you sure? [Y/n]" yn1
+    case $yn1 in
+        [Y] ) break;;
         [n] ) jumpto _restart;;
         * ) echo "Please answer Y(es) or n(o). ";;
     esac
 done
 
-_autostart
+_startup:
 echo ""
 echo "Make the launcher launchable."
 cd ${DESTINATION}
@@ -166,10 +166,17 @@ chmod 755 launcher.sh --verbose
 echo ""
 echo "Add APC launcher to crontab..."
 mkdir $DESTINATION"/log" --verbose
-crontab @reboot sh $DESTINATION"/launcher.sh >"$DESTINATION"/logs/cronlog 2>&1"
 
+#write out current crontab
+crontab -l > mycron
+#echo new cron into cron file
+echo "@reboot sh ${DESTINATION}/launcher.sh" >> mycron
+#install new cron file
+crontab mycron
+rm mycron
+echo "Added to Crontab"
 
-_restart
+_restart:
 # Restart
 echo ""
 echo "The process will restart in 10seconds..."
