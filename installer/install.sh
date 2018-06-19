@@ -4,7 +4,7 @@
 DESTINATION=$HOME"/.apc"
 DESTINATION_FILE="apc.tar.gz"
 DEST_HELPER="helper.py"
-RELEASE="https://github.com/tavvar/raspiapc/releases/download/0.0.1/apc_0.0.1.tar.gz"
+RELEASE="https://github.com/tavvar/raspiapc/releases/download/0.0.2/apc_0.0.2.tar.gz"
 
 
 function jumpto
