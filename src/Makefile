@@ -20,7 +20,7 @@ clean: clean-pyc clean-build
 
 build-tar: clean-build
 	@echo Building tar...
-	tar -zcvf ${TAR_FILE} *.py ${ADAFRUIT}
+	tar -zcvf ${TAR_FILE} launcher.sh *.py ${ADAFRUIT}
 	mkdir ${BUILD}
 	mv ${TAR_FILE} ${BUILD}
 	@echo

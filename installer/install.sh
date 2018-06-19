@@ -145,18 +145,36 @@ sleep .5
 echo ""
 echo ""
 echo ""
-echo "Adding Air Pollution Control to the Raspbian startup..."
+echo "Adding Air Pollution Control to the Raspbian startup?"
 sleep 1
 # Adding program to autostart
+while true; do
+    echo ""
+    read -p "Are your inputs correct? [Y/n]" yn
+    case $yn in
+        [Y] ) jumpto _autostart;;
+        [n] ) jumpto _restart;;
+        * ) echo "Please answer Y(es) or n(o). ";;
+    esac
+done
 
-
-
-# Starting program
-echo "Starting programm..."
+_autostart
 echo ""
-sleep .5
-#python $DESTINATION"/main.py"
+echo "Make the launcher launchable."
+cd ${DESTINATION}
+chmod 755 launcher.sh --verbose
+echo ""
+echo "Add APC launcher to crontab..."
+mkdir $DESTINATION"/log" --verbose
+crontab @reboot sh $DESTINATION"/launcher.sh >"$DESTINATION"/logs/cronlog 2>&1"
 
+
+_restart
+# Restart
+echo ""
+echo "The process will restart in 10seconds..."
+sleep 10
+sudo reboot
 
 echo ""
 echo "Installation complete."
