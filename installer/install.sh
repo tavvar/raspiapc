@@ -5,6 +5,8 @@ DESTINATION=$HOME"/.apc"
 DESTINATION_FILE="apc.tar.gz"
 DEST_HELPER="helper.py"
 RELEASE="https://github.com/tavvar/raspiapc/releases/latest"
+ADAFRUIT=$DESTINATION"/lib/Adafruit_Python_DHT"
+CFG="config"
 
 
 function jumpto
@@ -87,7 +89,8 @@ echo ""
 echo "And now the pip requirements"
 pip install pyserial
 echo ""
-sudo apt-get install curl wget
+echo "Apt-get dependecies:"
+sudo apt-get install curl wget jq build-essential python-dev
 
 sleep 1
 
@@ -95,53 +98,65 @@ sleep 1
 echo ""
 echo "Initialize 'config'..."
 echo ""
-sleep 2
+sleep 1
 
-echo "Make the config file..."
-python ${DEST_HELPER} config $URL $IDENTIFIER $INTERVAL
+python ${DEST_HELPER} $CFG $URL $IDENTIFIER $INTERVAL
 
-sleep 2
+sleep 1
 echo ""
 echo "Clean the installation path"
 
-rm -rf ${DESTINATION} --verbose
-rm -rf ${HOME}/${DESTINATION_FILE}${DESTINATION} --verbose
+sudo rm -rf ${DESTINATION} --verbose
 sleep 1
+
+#echo "Remove old file..."
+#rm -f ${HOME}/${DESTINATION_FILE}
 
 echo ""
 echo "Get the Files from APC Repository..."
-sleep 1.5
+sleep .5
 echo ""
-
-
-
 dl=$(curl -s https://api.github.com/repos/tavvar/raspiapc/releases/latest | \jq --raw-output '.assets[0] | .browser_download_url')
-wget -O ${HOME}/${DESTINATION_FILE} $dl --limit-rate=100k
+wget -O ${DESTINATION_FILE} $dl --limit-rate=100k
 #wget -O ${HOME}/${DESTINATION_FILE} ${RELEASE} --limit-rate=100k
 echo ""
 
+
 echo "Extract files and move them..."
+sleep 1
 # Extract the archive
 mkdir ${DESTINATION} --verbose
 echo ""
-tar -xzf ${HOME}/${DESTINATION_FILE} -C ${DESTINATION} --verbose
-
+tar -xzf ${DESTINATION_FILE} -C ${DESTINATION} --verbose
 echo ""
-mv config ${DESTINATION} --verbose
-echo "Remove old file..."
-rm -f ${HOME}/${DESTINATION_FILE}
+mv $CFG ${DESTINATION} --verbose
 
-sleep 1.5
+sleep 1
 
 # install Adafruit lib
 echo ""
+echo "##########################"
 echo "Trying to install the Adafruit DHT library..."
-sudo python ${DESTINATION}/lib/Adafruit_Python_DHT/setup.py install
+echo ""
+cd $ADAFRUIT
+sudo python setup.py install
 
-
+sleep .5
+echo ""
+echo ""
+echo ""
+echo "Adding Air Pollution Control to the Raspbian startup..."
+sleep 1
 # Adding program to autostart
 
+
+
 # Starting program
+echo "Starting programm..."
+echo ""
+sleep .5
+#python $DESTINATION"/main.py"
+
 
 echo ""
 echo "Installation complete."
