@@ -19,7 +19,7 @@ class Config:
             print("Success init config")
         except (IOError, ValueError) as err:
             file = open(self.filename,"w")
-            file.write(json.dumps({'id':12345,'interval':30,'url':'http://wasdabyx.de:8080'}))
+            file.write(json.dumps({'id':"12345",'interval':30,'url':'http://wasdabyx.de:8080'}))
             print(err)
             print("Standard config has been made.")
         return file.close()
@@ -68,7 +68,8 @@ class Config:
         return id
     
     def getId(self):
-        return self.configDict['id']
+        id = str(self.configDict['id'])
+        return id
     
     def getUrl(self):
         return self.configDict['url']

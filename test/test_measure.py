@@ -17,14 +17,18 @@ class TestMeasure(unittest.TestCase):
             if os.path.isfile(cls.m.filename):
                 os.remove(cls.m.filename)
         except IOError as io:
-            print("ok")
+            print("")
             
-    def test_addFetchFailWrongParam(self):
+    def test_addFetch_WrongParam(self):
         self.assertFalse(self.m.addFetch(humidity="String", temperature=25.5, pm25=5.0, pm10=10.0, id="abc123", ts=self.ts))
         
         
-    def test_addFetchOK(self):
+    def test_addFetch_OK(self):
         self.assertTrue(self.m.addFetch(humidity=50.0, temperature=25.5, pm25=5.0, pm10=10.0, id="abc123", ts=self.ts))
+        
+    def test_initFile_Ok(self):
+        init = self.m.initFile()
+        self.assertTrue(init)
         
     
 

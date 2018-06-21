@@ -12,11 +12,15 @@ class Measure:
     def initFile(self):
         try:
             fo = open(self.filename, "r")
+            fo.close()
+            return True
         except IOError:
             print("Create File '%s' at '%s'" % (self.filename, os.getcwd()))
             fo = open(self.filename, "w")
             fo.write("{}")
-        return fo.close()
+            fo.close()
+            return True
+        return False
     
     
     def deleteFile(self):

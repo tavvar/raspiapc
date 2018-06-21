@@ -20,9 +20,11 @@ class TestReadht(unittest.TestCase):
         print('')
         with mock_import():
             from src import readht
-            mock.patch('readht.getAll', return_value=(22.3,30.2))
-            #a,b = readht.getAll(22,4)
-            #print("blub: %f %f" % (readht.getAll()))
+            arr = [22.5,15.3]
+            hallo = mock.patch('readht.getAll', return_value=arr)
+            #a = hallo
+            #a = readht.getAll(5)
+            #print("blub: %f %f" % (a[1], a[2]))
             #self.assertEqual(readht.getAll(22,4), (22.3,30.2))
         
 
