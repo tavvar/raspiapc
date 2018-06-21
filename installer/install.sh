@@ -5,7 +5,7 @@ DESTINATION=$HOME"/.apc"
 DESTINATION_FILE="apc.tar.gz"
 DEST_HELPER="helper.py"
 RELEASE="https://github.com/tavvar/raspiapc/releases/latest"
-ADAFRUIT=$DESTINATION"/lib/Adafruit_Python_DHT"
+ADAFRUIT=$HOME"/Adafruit_Python_DHT"
 CFG="config"
 
 
@@ -20,13 +20,13 @@ function jumpto
 
 OS_VERSION=$(< /etc/os-release)
 RASPI=0
-if [[ $OS_VERSION = *"raspbian"* ]]; then
-  RASPI=0
-else
-  RASPI=1
-  echo "Sorry, this is no Raspberry. Bye bye!"
-  exit 1
-fi
+##if [[ $OS_VERSION = *"raspbian"* ]]; then
+##  RASPI=0
+##else
+##  RASPI=1
+##  echo "Sorry, this is no Raspberry. Bye bye!"
+##  exit 1
+##fi
 
 
 echo ""
@@ -68,6 +68,7 @@ echo "Please check all of your inputs:"
 echo -e "ID: \t\t\t'$IDENTIFIER'"
 echo -e "URL: \t\t\t'$URL'"
 echo -e "Measuring interval: \t'$INTERVAL'"
+echo "########################################"
 
 while true; do
     echo ""
@@ -78,6 +79,28 @@ while true; do
         * ) echo "Please answer Y(es) or n(o). ";;
     esac
 done
+
+
+echo ""
+echo "Initialize 'config'..."
+echo ""
+sleep 1
+
+# Some inline python...
+python << END
+import sys, json
+
+filename = "config"
+url = "$URL"
+id = "$IDENTIFIER"
+im = "$INTERVAL"
+
+fo = open(filename, 'w+')
+fo.write(json.dumps({'id':id,'interval':im,'url':url}))
+END
+echo "'config' created!"
+echo ""
+
 
 # Requirements
 echo ""
@@ -91,16 +114,6 @@ pip install pyserial requests
 echo ""
 echo "Apt-get dependecies:"
 sudo apt-get install curl wget jq build-essential python-dev
-
-sleep 1
-
-
-echo ""
-echo "Initialize 'config'..."
-echo ""
-sleep 1
-
-python ${DEST_HELPER} $CFG $URL $IDENTIFIER $INTERVAL
 
 sleep 1
 echo ""
@@ -133,20 +146,36 @@ mv $CFG ${DESTINATION} --verbose
 
 sleep 1
 
+
 # install Adafruit lib
 echo ""
 echo "##########################"
 echo "Trying to install the Adafruit DHT library..."
-echo ""
-cd $ADAFRUIT
-sudo python setup.py install
 
-sleep .5
+if [[ ! -d $ADAFRUIT ]]; then
+    echo "Cloning Adafruit repository..."
+    git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+    cd $ADAFRUIT
+    sudo python setup.py install
+    cd $HOME
+else
+    echo "---> Adafruit repository already installed. Skip this step!"
+    echo "Install the lib..."
+    sleep .5
+    cd $ADAFRUIT
+    sudo python setup.py install
+    cd $HOME
+fi
+
+
+sleep 1
 echo ""
 echo ""
 echo ""
 echo "Adding Air Pollution Control to the Raspbian startup?"
 sleep 1
+
+
 # Adding program to autostart
 while true; do
     echo ""
@@ -166,7 +195,6 @@ chmod 755 launcher.sh --verbose
 echo ""
 echo "Add APC launcher to crontab..."
 mkdir $DESTINATION"/log" --verbose
-
 #write out current crontab
 crontab -l > mycron
 #echo new cron into cron file
@@ -176,11 +204,17 @@ crontab mycron
 rm mycron
 echo "Added to Crontab"
 
+
 _restart:
 # Restart
 echo ""
-echo "The process will restart in 10seconds..."
-sleep 10
+echo "Your computer will restart in 10seconds. To break press CTRL+C"
+secs=$((10))
+while [ $secs -gt 0 ]; do
+   echo -ne "     Remaining $secs\033[0K\r "
+   sleep 1
+   : $((secs--))
+done
 sudo reboot
 
 echo ""
