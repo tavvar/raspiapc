@@ -20,13 +20,15 @@ function jumpto
 
 OS_VERSION=$(< /etc/os-release)
 RASPI=0
-##if [[ $OS_VERSION = *"raspbian"* ]]; then
-##  RASPI=0
-##else
-##  RASPI=1
-##  echo "Sorry, this is no Raspberry. Bye bye!"
-##  exit 1
-##fi
+if [[ $OS_VERSION = *"raspbian"* ]]; then
+  RASPI=0
+else
+  RASPI=1
+  echo ""
+  echo "Sorry, this is no Raspberry. Bye bye!"
+  echo ""
+  exit 1
+fi
 
 
 echo ""
@@ -88,7 +90,7 @@ sleep 1
 
 # Some inline python...
 python << END
-import sys, json
+import json
 
 filename = "config"
 url = "$URL"
@@ -97,9 +99,18 @@ im = "$INTERVAL"
 
 fo = open(filename, 'w+')
 fo.write(json.dumps({'id':id,'interval':im,'url':url}))
+fo.close()
+print("Everything seems good. Creating 'config' should be done.")
 END
-echo "'config' created!"
+
 echo ""
+echo "INFO:"
+echo -e "\tIf creating 'config' fails, you can generate your own config file:"
+echo -e "\t1. Open terminal"
+echo -e "\t2. Do: cd $DESTINATION "
+echo -e "\t3. Do: nano config"
+echo -e "\t4. Add '{\"id\":\"$IDENTIFIER\",\"url\":\"$URL\",\"interval\":$INTERVAL}' (without quotation mark)"
+echo -e "\t5. Save and close the file and be lucky :)"
 
 
 # Requirements
@@ -113,7 +124,8 @@ echo "And now the pip requirements"
 pip install pyserial requests
 echo ""
 echo "Apt-get dependecies:"
-sudo apt-get install curl wget jq build-essential python-dev
+sudo apt-get install build-essential python-dev
+#sudo apt-get install curl wget jq
 
 sleep 1
 echo ""
@@ -122,27 +134,26 @@ echo "Clean the installation path"
 sudo rm -rf ${DESTINATION} --verbose
 sleep 1
 
-#echo "Remove old file..."
-#rm -f ${HOME}/${DESTINATION_FILE}
-
 echo ""
 echo "Get the Files from APC Repository..."
 sleep .5
 echo ""
-dl=$(curl -s https://api.github.com/repos/tavvar/raspiapc/releases/latest | \jq --raw-output '.assets[0] | .browser_download_url')
-wget -O ${DESTINATION_FILE} $dl --limit-rate=100k
-#wget -O ${HOME}/${DESTINATION_FILE} ${RELEASE} --limit-rate=100k
-echo ""
+##dl=$(curl -s https://api.github.com/repos/tavvar/raspiapc/releases/latest | \jq --raw-output '.assets[0] | .browser_download_url')
+##wget -O ${DESTINATION_FILE} $dl --limit-rate=100k
 
-
-echo "Extract files and move them..."
-sleep 1
-# Extract the archive
-mkdir ${DESTINATION} --verbose
+svn export https://github.com/tavvar/raspiapc/trunk/src $DESTINATION
 echo ""
-tar -xzf ${DESTINATION_FILE} -C ${DESTINATION} --verbose
-echo ""
+echo "Move 'config' to program directory..."
 mv $CFG ${DESTINATION} --verbose
+echo ""
+
+##echo "Extract files and move them..."
+##sleep 1
+### Extract the archive
+##mkdir ${DESTINATION} --verbose
+##echo ""
+##tar -xzf ${DESTINATION_FILE} -C ${DESTINATION} --verbose
+##echo ""
 
 sleep 1
 
@@ -166,6 +177,7 @@ else
     sudo python setup.py install
     cd $HOME
 fi
+echo "##########################"
 
 
 sleep 1
