@@ -40,6 +40,3 @@ def getAll3(sensor, pin, measures):
     result = [humidity, temperature]
     return result
 
-#print getTemp(22,4)
-#print getHumidity(22,4)
-#print getAll(22,4)

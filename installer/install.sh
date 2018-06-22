@@ -20,7 +20,7 @@ function jumpto
 
 OS_VERSION=$(< /etc/os-release)
 RASPI=0
-if [[ $OS_VERSION = *"raspbian"* ]]; then
+if [[ $OS_VERSION = *"mint"* ]]; then
   RASPI=0
 else
   RASPI=1

@@ -50,7 +50,7 @@ class Measure:
         return jsonPython
             
     
-    def addFetch(self, humidity, temperature, pm25, pm10, id, ts = "0"):
+    def addFetch(self, humidity, temperature, pm25, pm10, id, long=0.0, lat=0.0, ts=0):
         ts = int(time.time())
         try:
             float(pm25)
@@ -61,8 +61,10 @@ class Measure:
             dummy = -999
             humidity = temperature = pm25 = pm10 = dummy
             return False
-        json2add = {'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}
-        json2overwrite = {'id':id,'data':[{'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}]}
+        json2add = {'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10,'long':long,'lat':lat}
+        #json2overwrite = {'id':id,'data':[{'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}]}
+        json2overwrite = {'id':id,'data':[]}
+        json2overwrite['data'].append(json2add)
         update = False
         try:
             fo = open(self.filename, "r+")
@@ -82,9 +84,9 @@ class Measure:
         
 
 
-
-#m = Measure()
-#m.addFetch(10.0,20.5,1.8,2.4,12345)
+if __name__ == '__main__':
+    m = Measure()
+    m.addFetch(10.0,20.5,1.8,2.4,12345,17.2,11.0)
 
             
         

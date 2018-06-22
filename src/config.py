@@ -68,13 +68,55 @@ class Config:
         return id
     
     def getId(self):
-        id = str(self.configDict['id'])
-        return id
+        try:
+            return str(self.configDict['id'])
+        except KeyError as kerr:
+            return False
+        except TypeError as terr:
+            return False
+        except NameError as nerr:
+            return False
     
     def getUrl(self):
-        return self.configDict['url']
+        try:
+            return self.configDict['url']
+        except KeyError as kerr:
+            return False
+        except TypeError as terr:
+            return False
+        except NameError as nerr:
+            return False
     
     def getInterval(self):
-        interval = int(self.configDict['interval'])
-        return interval
-    
+        try:
+            return int(self.configDict['interval'])
+        except KeyError as kerr:
+            return False
+        except TypeError as terr:
+            return False
+        except NameError as nerr:
+            return False
+        
+    def getLong(self):
+        try:
+            return float(self.configDict['long'])
+        except KeyError as kerr:
+            return False
+        except TypeError as terr:
+            return False
+        except NameError as nerr:
+            return False
+        
+    def getLat(self):
+        try:
+            return float(self.configDict['lat'])
+        except KeyError as kerr:
+            return False
+        except TypeError as terr:
+            return False
+        except NameError as nerr:
+            return False
+
+
+if __name__ == '__main__':
+    c = self.Config()
