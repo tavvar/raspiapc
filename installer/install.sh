@@ -20,7 +20,7 @@ function jumpto
 
 OS_VERSION=$(< /etc/os-release)
 RASPI=0
-if [[ $OS_VERSION = *"mint"* ]]; then
+if [[ $OS_VERSION = *"raspbian"* ]]; then
   RASPI=0
 else
   RASPI=1
@@ -117,19 +117,20 @@ echo -e "\t5. Save and close the file and be lucky :)"
 echo ""
 echo "Installing requirements"
 echo ""
-echo "First install pip"
-sudo apt-get install python-pip
+echo "First install pip and other dependencies..."
+sudo apt-get install python-pip build-essential python-dev subversion git
 echo ""
 echo "And now the pip requirements"
 pip install pyserial requests
 echo ""
-echo "Apt-get dependecies:"
-sudo apt-get install build-essential python-dev
+#echo "Apt-get dependecies:"
+#sudo apt-get install build-essential python-dev subversion git
 #sudo apt-get install curl wget jq
 
-sleep 1
+sleep 0.5
 echo ""
 echo "Clean the installation path"
+sleep 0.5
 
 sudo rm -rf ${DESTINATION} --verbose
 sleep 1
@@ -155,14 +156,14 @@ echo ""
 ##tar -xzf ${DESTINATION_FILE} -C ${DESTINATION} --verbose
 ##echo ""
 
-sleep 1
+sleep 0.5
 
 
 # install Adafruit lib
 echo ""
 echo "##########################"
 echo "Trying to install the Adafruit DHT library..."
-
+sleep 1
 if [[ ! -d $ADAFRUIT ]]; then
     echo "Cloning Adafruit repository..."
     git clone https://github.com/adafruit/Adafruit_Python_DHT.git
