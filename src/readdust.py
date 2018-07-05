@@ -101,21 +101,28 @@ def getAll(measures = 5):
     time.sleep(5)
     pm25 = 0
     pm10 = 0
+    false_m_pm25 = 0
+    false_m_pm10 = 0
     for t in range(measures):
         values = cmd_query_data();
-        if values is not None and values[0]>0 and values[1]>0:
+        if values[0]>0 and values[1]>0:
             print("SDS011\t-> PM2.5: ", values[0], ", PM10: ", values[1])
             pm25 += values[0]
             pm10 += values[1]
             time.sleep(2)
-    
-    pm25 = (pm25/measures)
-    pm10 = (pm10/measures)
+        else:
+            print("Error at fetching pm25 or pm10. Fetch is skipped.")
+            time.sleep(2)
+            false_m_pm25 += 1
+            false_m_pm10 += 1
+    try:
+        pm25 = (pm25/(measures-false_m_pm25))
+        pm10 = (pm10/(measures-false_m_pm10))
+    except ZeroDivisionError as zerr:
+        pm25 = False
+        pm10 = False
     print("SDS011\t-> Averages: PM2.5 = ", pm25, ", PM10 = ", pm10)
     cmd_set_mode(0);
     cmd_set_sleep()
     result = [pm25,pm10]
     return result
-
-
-#print(getAll())

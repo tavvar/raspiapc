@@ -77,7 +77,7 @@ class Scheduler:
             #print("Debug: Status Code = %i" % (response.status_code))
             #print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
-                print("Sending file successfully.")
+                print("Success in sending file!")
                 self.measure_obj.deleteFile()
                 return True
         print("File could not be sent due to failing connectivity. Measures are cached locally in file '%s' instead." % (self.measure_obj.filename))
