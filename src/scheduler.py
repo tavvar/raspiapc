@@ -71,7 +71,7 @@ class Scheduler:
         humidity, temperature = result[0], result[1]
         result = que.get()
         pm25, pm10 = result[0], result[1]
-        self.measure_obj.addFetch(humidity, temperature, pm25, pm10, _id)
+        self.measure_obj.addFetch(humidity, temperature, pm25, pm10, _id, long=_long, lat=_lat)
         if self.isOnline(_url):
             response = requests.put(url=_url, json=self.measure_obj.getJson())
             #print("Debug: Status Code = %i" % (response.status_code))
