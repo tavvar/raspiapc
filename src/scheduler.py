@@ -56,6 +56,9 @@ class Scheduler:
     def syncMeasures(self, measures=5):
         _url = self.config_obj.getUrl()
         _id = self.config_obj.getId()
+        _long = self.config_obj.getLong()
+        _lat = self.config_obj.getLat()
+        
         que = Queue.Queue()
         args_ht = [self.SENSOR, self.PIN, measures]
         ht = threading.Thread(target=lambda q, arg1: q.put(readht.getAll(arg1)), args=(que, measures))
