@@ -25,13 +25,6 @@ class Scheduler:
             print("Url '%s' unreachable. Using local file '%s'" % (url, self.config_obj.filename))
             return False
         return True
-##        try:
-##            urllib2.urlopen(url, timeout=1)
-##            return True
-##        except urllib2.URLError as err: 
-##            return False
-##        except ValueError as valerr:
-##            return False
     
     
     def syncConfig(self):
