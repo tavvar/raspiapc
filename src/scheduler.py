@@ -47,10 +47,10 @@ class Scheduler:
         
     
     def syncMeasures(self, measures=5):
-        _url = self.config_obj.getUrl()
-        _id = self.config_obj.getId()
-        _long = self.config_obj.getLong()
-        _lat = self.config_obj.getLat()
+        url_t = self.config_obj.getUrl()
+        id_t = self.config_obj.getId()
+        long_t = self.config_obj.getLong()
+        lat_t = self.config_obj.getLat()
         
         que = Queue.Queue()
         args_ht = [self.SENSOR, self.PIN, measures]
@@ -61,12 +61,12 @@ class Scheduler:
         ht.join()
         dust.join()
         result = que.get()
-        humidity, temperature = result[0], result[1]
+        humidity_t, temperature_t = result[0], result[1]
         result = que.get()
-        pm25, pm10 = result[0], result[1]
-        self.measure_obj.addFetch(humidity, temperature, pm25, pm10, _id, long=_long, lat=_lat)
-        if self.isOnline(_url):
-            response = requests.put(url=_url, json=self.measure_obj.getJson())
+        pm25_t, pm10_t = result[0], result[1]
+        self.measure_obj.addFetch(humidity=humidity_t, temperature=temperature_t, pm25=pm25_t, pm10=pm10_t, id=id_t, long=long_t, lat=lat_t)
+        if self.isOnline(url_t):
+            response = requests.put(url=url_t, json=self.measure_obj.getJson())
             #print("Debug: Status Code = %i" % (response.status_code))
             #print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
