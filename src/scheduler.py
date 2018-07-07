@@ -4,6 +4,7 @@ import threading, time, config, measure, readht, readdust, requests, json, Queue
 class Scheduler:
     SENSOR = 22
     PIN = 4
+    interval
     
     lock = ""
     
@@ -11,7 +12,8 @@ class Scheduler:
     measure_obj = ""
     
     
-    def __init__(self):
+    def __init__(self, interval):
+        self.interval = interval
         self.lock = threading.Lock()
         self.config_obj = config.Config()
         self.measure_obj = measure.Measure()
@@ -83,8 +85,8 @@ class Scheduler:
             self.config_obj.getConfig()
             print("Syncing config...")
             self.syncConfig()
-            wait = 15
-            waitm = wait/60
+            wait = self.interval*60
+            waitm = self.interval
             print("Syncing config sleeps %i seconds / %f minutes\n" % (wait, waitm))
             self.lock.release()
             time.sleep(wait)

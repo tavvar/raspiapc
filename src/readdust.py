@@ -104,8 +104,10 @@ def getAll(measures = 5):
     false_m_pm25 = 0
     false_m_pm10 = 0
     for t in range(measures):
+        values[0] = False
+        values[1] = False
         values = cmd_query_data();
-        if values[0]>0 and values[1]>0:
+        if values[0] is not False and values[1] is not False:
             print("SDS011\t-> PM2.5: ", values[0], ", PM10: ", values[1])
             pm25 += values[0]
             pm10 += values[1]

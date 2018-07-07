@@ -3,7 +3,7 @@ import scheduler, threading
 
 
 if __name__=='__main__': 
-    s = scheduler.Scheduler()
+    s = scheduler.Scheduler(interval=10)
 
     measureThread = threading.Thread(target=s.syncMeasuresInterval)
     configThread = threading.Thread(target=s.syncConfigInterval)
