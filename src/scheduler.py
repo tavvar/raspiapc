@@ -4,7 +4,7 @@ import threading, time, config, measure, readht, readdust, requests, json, Queue
 class Scheduler:
     SENSOR = 22
     PIN = 4
-    interval
+    interval = 0
     
     lock = ""
     
