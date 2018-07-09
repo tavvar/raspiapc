@@ -41,11 +41,8 @@ class Measure:
         try:
             fo = open(self.filename, "r")
         except IOError:
-            self.initFile()
-            fo = open(self.filename, "r")
-            jsonPython = json.load(fo)
-        else:
-            jsonPython = json.load(fo)
+            return False
+        jsonPython = json.load(fo)
         fo.close()
         return jsonPython
             
@@ -58,29 +55,23 @@ class Measure:
             float(humidity)
             float(temperature)
         except ValueError:
-            dummy = -999
+            dummy = False
             humidity = temperature = pm25 = pm10 = dummy
             return False
         json2add = {'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10,'long':long,'lat':lat}
-        #json2overwrite = {'id':id,'data':[{'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10}]}
         json2overwrite = {'id':id,'data':[]}
         json2overwrite['data'].append(json2add)
-        update = False
-        try:
-            fo = open(self.filename, "r+")
-            print("Update File '%s'" % (self.filename))
-            update = True
-        except IOError:
-            self.initFile()
-            fo = open(self.filename, "r+")
         data = self.getJson()
-        if update:
-            data['data'].append(json2add)
-        else:
+        if data == False:
+            self.initFile()
             data = json2overwrite
+        else:
+            print("Update File '%s' at '%s'" % (self.filename, os.getcwd()))
+            data['data'].append(json2add)
+        fo = open(self.filename, 'w+')
         json.dump(data, fo)
         fo.close()
-        return True
+        return True        
         
 
 
