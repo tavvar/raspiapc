@@ -1,4 +1,5 @@
 import threading, time, config, measure, readht, readdust, requests, json, Queue
+from datetime import datetime
 #import urllib2
 
 class Scheduler:
@@ -53,6 +54,8 @@ class Scheduler:
         id_t = self.config_obj.getId()
         long_t = self.config_obj.getLong()
         lat_t = self.config_obj.getLat()
+        timestamp = int(time.time())
+        print("Time: %i // %s" % (timestamp,datetime.fromtimestamp(timestamp)))
         
         que = Queue.Queue()
         args_ht = [self.SENSOR, self.PIN, measures]
@@ -66,11 +69,9 @@ class Scheduler:
         humidity_t, temperature_t = result[0], result[1]
         result = que.get()
         pm25_t, pm10_t = result[0], result[1]
-        self.measure_obj.addFetch(humidity=humidity_t, temperature=temperature_t, pm25=pm25_t, pm10=pm10_t, id=id_t, long=long_t, lat=lat_t)
+        self.measure_obj.addFetch(humidity=humidity_t, temperature=temperature_t, pm25=pm25_t, pm10=pm10_t, id=id_t, long=long_t, lat=lat_t, ts=timestamp)
         if self.isOnline(url_t):
             response = requests.put(url=url_t, json=self.measure_obj.getJson())
-            #print("Debug: Status Code = %i" % (response.status_code))
-            #print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
                 print("Success in sending file!")
                 self.measure_obj.deleteFile()

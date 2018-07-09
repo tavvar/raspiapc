@@ -48,7 +48,6 @@ class Measure:
             
     
     def addFetch(self, humidity, temperature, pm25, pm10, id, long=0.0, lat=0.0, ts=0):
-        ts = int(time.time())
         try:
             float(pm25)
             float(pm10)
