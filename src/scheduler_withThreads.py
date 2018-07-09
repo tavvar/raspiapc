@@ -1,4 +1,5 @@
 import threading, time, config, measure, readht, readdust, requests, json, Queue
+from datetime import datetime
 #import urllib2
 
 class Scheduler:
@@ -53,32 +54,24 @@ class Scheduler:
         id_t = self.config_obj.getId()
         long_t = self.config_obj.getLong()
         lat_t = self.config_obj.getLat()
+        timestamp = int(time.time())
+        print("Time: %i // %s" % (timestamp,datetime.fromtimestamp(timestamp)))
         
-##        que = Queue.Queue()
-##        args_ht = [self.SENSOR, self.PIN, measures]
-##        ht = threading.Thread(target=lambda q, arg1: q.put(readht.getAll(arg1)), args=(que, measures))
-##        dust = threading.Thread(target=lambda q, arg1: q.put(readdust.getAll(arg1)), args=(que, measures))
-##        ht.start()
-##        dust.start()       
-##        ht.join()
-##        dust.join()
-##        result = que.get()
-##        humidity_t, temperature_t = result[0], result[1]
-##        result = que.get()
-##        pm25_t, pm10_t = result[0], result[1]
-        dht22 = readht.getAll(measures)
-        humidity_t = dht22[0]
-        temperature_t = dht22[1]
-        
-        sds011 = readdust.getAll(measures)
-        pm25_t = sds011[0]
-        pm10_t = sds011[1]
-        
-        self.measure_obj.addFetch(humidity=humidity_t, temperature=temperature_t, pm25=pm25_t, pm10=pm10_t, id=id_t, long=long_t, lat=lat_t)
+        que = Queue.Queue()
+        args_ht = [self.SENSOR, self.PIN, measures]
+        ht = threading.Thread(target=lambda q, arg1: q.put(readht.getAll(arg1)), args=(que, measures))
+        dust = threading.Thread(target=lambda q, arg1: q.put(readdust.getAll(arg1)), args=(que, measures))
+        ht.start()
+        dust.start()       
+        ht.join()
+        dust.join()
+        result = que.get()
+        humidity_t, temperature_t = result[0], result[1]
+        result = que.get()
+        pm25_t, pm10_t = result[0], result[1]
+        self.measure_obj.addFetch(humidity=humidity_t, temperature=temperature_t, pm25=pm25_t, pm10=pm10_t, id=id_t, long=long_t, lat=lat_t, ts=timestamp)
         if self.isOnline(url_t):
             response = requests.put(url=url_t, json=self.measure_obj.getJson())
-            #print("Debug: Status Code = %i" % (response.status_code))
-            #print("Debug: Response.text = %s" % (response.text))
             if response.status_code == 200:
                 print("Success in sending file!")
                 self.measure_obj.deleteFile()
@@ -107,7 +100,7 @@ class Scheduler:
             id = self.config_obj.getId()
             print("Syncing measures...")
             self.syncMeasures(measures)
-            wait = self.config_obj.getInterval()
+            wait = self.config_obj.getInterval()*60
             waitm = wait/60
             print("Syncing measures sleeps %i seconds / %f minutes\n" % (wait, waitm))
             self.lock.release()
