@@ -207,7 +207,6 @@ cd ${DESTINATION}
 chmod 755 launcher.sh --verbose
 echo ""
 echo "Add APC launcher to crontab..."
-mkdir $DESTINATION"/log" --verbose
 #write out current crontab
 crontab -l > mycron
 #echo new cron into cron file
@@ -223,7 +222,7 @@ _restart:
 # Restart
 echo ""
 echo "Your computer will restart in 10seconds. To break press CTRL+C"
-secs=$((10))
+secs=$((20))
 while [ $secs -gt 0 ]; do
    echo -ne "     Remaining $secs\033[0K\r "
    sleep 1
