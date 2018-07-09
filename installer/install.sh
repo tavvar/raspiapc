@@ -212,7 +212,7 @@ mkdir $DESTINATION"/log" --verbose
 crontab -l > mycron
 #echo new cron into cron file
 ##echo "@reboot sh ${DESTINATION}/launcher.sh" >> mycron
-echo "@reboot sudo sleep 10 && ${DESTINATION}/./launcher.sh &"
+echo "@reboot sudo sleep 10 && ${DESTINATION}/./launcher.sh &" >> mycron
 #install new cron file
 crontab mycron
 rm mycron
