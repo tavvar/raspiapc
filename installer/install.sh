@@ -195,7 +195,7 @@ while true; do
     read -p "Are you sure? [Y/n]" yn1
     case $yn1 in
         [Y] ) break;;
-        [n] ) jumpto _restart;;
+        [n] ) jumpto _complete;;
         * ) echo "Please answer Y(es) or n(o). ";;
     esac
 done
@@ -211,7 +211,8 @@ mkdir $DESTINATION"/log" --verbose
 #write out current crontab
 crontab -l > mycron
 #echo new cron into cron file
-echo "@reboot sh ${DESTINATION}/launcher.sh" >> mycron
+##echo "@reboot sh ${DESTINATION}/launcher.sh" >> mycron
+echo "@reboot sudo sleep 10 && ${DESTINATION}/./launcher.sh &"
 #install new cron file
 crontab mycron
 rm mycron
@@ -230,6 +231,7 @@ while [ $secs -gt 0 ]; do
 done
 sudo reboot
 
+_complete:
 echo ""
 echo "Installation complete."
 echo ""
