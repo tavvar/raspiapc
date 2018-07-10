@@ -65,8 +65,12 @@ class Measure:
             self.initFile()
             data = json2overwrite
         else:
-            print("Update File '%s' at '%s'" % (self.filename, os.getcwd()))
-            data['data'].append(json2add)
+            try:
+                data['data'].append(json2add)
+                print("Update File '%s' at '%s'" % (self.filename, os.getcwd()))
+            except KeyError as kerr:
+                data = json2overwrite
+                print("Corrupt data. Create File '%s' at '%s'" % (self.filename, os.getcwd()))
         fo = open(self.filename, 'w+')
         json.dump(data, fo)
         fo.close()
