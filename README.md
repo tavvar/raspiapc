@@ -96,6 +96,7 @@ return True
 
 ## scheduler.py
 ### function syncConfig()
+Does a GET-request to the url of the server with couchDB (read from local config which is synchronized with couchDB). The actual config is in the response as json. If the server is unreachable, the scheduler function uses the local config for next measure instead.
 ```python
 def syncConfig(self):
         _url = self.config_obj.getUrl()+"/config"
@@ -116,6 +117,7 @@ return False
 ```
 
 ### function syncMeasures()
+Does a PUT-Request with the *queue.json* as data. The target url is extracted from the local *config* file. If the server is unreachable, the function *addFetch* stores the measured data in local file *queue.json* instead.
 ```python
 def syncMeasures(self, measures=5):
         url_t = self.config_obj.getUrl()
@@ -144,3 +146,5 @@ def syncMeasures(self, measures=5):
         print("File could not be sent due to failing connectivity. Measures are cached locally in file '%s' instead." % (self.measure_obj.filename))
 return False
 ```
+
+# Tests
