@@ -79,7 +79,18 @@ return True
 ### Example json
 ```json
 {
-        "id" : "<id>", "data": [{"humidity":35.5, "temperature":22.4, "pm25":1.2, "pm10":10.3, "long":40.58, "lat":68.6, "timestamp":12345678}]
+        "id" : "<id>", 
+        "data": [
+                        {
+                                "humidity":35.5, 
+                                "temperature":22.4, 
+                                "pm25":1.2, 
+                                "pm10":10.3, 
+                                "long":40.58, 
+                                "lat":68.6, 
+                                "timestamp":12345678
+                        }
+        ]
 }
 ```
 
