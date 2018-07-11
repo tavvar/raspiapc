@@ -23,3 +23,88 @@ To run the measuring go to the new created directory and execute *main.py* with 
 ```bash
 cd ${HOME}/.apc && python main.py
 ```
+
+# Source Code: Examples
+## measure.py
+```python
+def addFetch(self, humidity, temperature, pm25, pm10, id, long=0.0, lat=0.0, ts=0):
+        try:
+            float(pm25)
+            float(pm10)
+            float(humidity)
+            float(temperature)
+        except ValueError:
+            dummy = False
+            humidity = temperature = pm25 = pm10 = dummy
+            return False
+        json2add = {'timestamp':ts,'humidity':humidity,'temperature':temperature,'pm25':pm25,'pm10':pm10,'long':long,'lat':lat}
+        json2overwrite = {'id':id,'data':[]}
+        json2overwrite['data'].append(json2add)
+        data = self.getJson()
+        if data == False:
+            self.initFile()
+            data = json2overwrite
+        else:
+            try:
+                data['data'].append(json2add)
+                print("Update File '%s' at '%s'" % (self.filename, os.getcwd()))
+            except KeyError as kerr:
+                data = json2overwrite
+                print("Corrupt data. Create File '%s' at '%s'" % (self.filename, os.getcwd()))
+        fo = open(self.filename, 'w+')
+        json.dump(data, fo)
+        fo.close()
+return True 
+```
+
+
+## scheduler.py
+### function syncConfig()
+```python
+def syncConfig(self):
+        _url = self.config_obj.getUrl()+"/config"
+        _id = "id="+str(self.config_obj.getId())
+        if self.isOnline(self.config_obj.getUrl()):
+            response = requests.get(url=_url, params=_id)
+            if response.status_code == 200:
+                print("Response data from %s: '%s'" % (_url,response.text))
+                try:
+                    config_str = json.dumps(response.json())
+                except ValueError as valerr:
+                    print("No JSON in response. Config wasn't updated.")
+                    return False
+                else:
+                    self.config_obj.updateConfig(config_str)
+                    return True
+return False
+```
+
+### function syncMeasures()
+```python
+def syncMeasures(self, measures=5):
+        url_t = self.config_obj.getUrl()
+        id_t = self.config_obj.getId()
+        long_t = self.config_obj.getLong()
+        lat_t = self.config_obj.getLat()
+        timestamp = int(time.time())
+        print("Time: %i" % (timestamp))
+        
+        dht22 = readht.getAll(measures)
+        humidity_t = dht22[0]
+        temperature_t = dht22[1]
+        
+        sds011 = readdust.getAll(measures)
+        pm25_t = sds011[0]
+        pm10_t = sds011[1]
+        
+        self.measure_obj.addFetch(humidity=humidity_t, temperature=temperature_t, pm25=pm25_t, pm10=pm10_t, id=id_t, long=long_t, lat=lat_t, ts=timestamp)
+        timestamp = int(time.time())
+        if self.isOnline(url_t):
+            response = requests.put(url=url_t, json=self.measure_obj.getJson())
+            if response.status_code == 200:
+                print("Success in sending file!")
+                self.measure_obj.deleteFile()
+                return True
+        print("File could not be sent due to failing connectivity. Measures are cached locally in file '%s' instead." % (self.measure_obj.filename))
+return False
+```
