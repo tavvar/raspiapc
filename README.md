@@ -25,7 +25,27 @@ cd ${HOME}/.apc && python main.py
 ```
 
 # Source Code: Examples
+## config.py
+Updates the Config file with the new config in json format. Important: parameter *newConfig* is a json string, no python dictionary!
+```python
+def updateConfig(self,newConfig):
+        try:
+            file = open(self.filename,"w+")
+        except (IOError) as err:
+            print("Not able to create or open file. Error -> %s" % (err))
+            return False
+        try:
+            json.loads(newConfig)
+        except ValueError as valerr:
+            print("No JSON")
+            return False
+        file.write(newConfig)                
+        file.close()
+return True
+```
+
 ## measure.py
+Generates a new file (standard: queue.json) and fills it with sensor data in json format.
 ```python
 def addFetch(self, humidity, temperature, pm25, pm10, id, long=0.0, lat=0.0, ts=0):
         try:
@@ -56,7 +76,12 @@ def addFetch(self, humidity, temperature, pm25, pm10, id, long=0.0, lat=0.0, ts=
         fo.close()
 return True 
 ```
-
+### Example json
+```json
+{
+        "id" : "<id>", "data": [{"humidity":35.5, "temperature":22.4, "pm25":1.2, "pm10":10.3, "long":40.58, "lat":68.6, "timestamp":12345678}]
+}
+```
 
 ## scheduler.py
 ### function syncConfig()
