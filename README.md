@@ -148,3 +148,43 @@ return False
 ```
 
 # Tests
+Tests can be found in the *test* directory. Tests have been implemented for
+- measure.py
+- config.py
+
+## test_measure.py
+```python
+def test_addFetch_WrongParam(self):
+        self.assertFalse(self.m.addFetch(humidity="String", temperature=25.5, pm25=5.0, pm10=10.0, id="abc123", ts=self.ts))
+             
+def test_addFetch_OK(self):
+        self.assertTrue(self.m.addFetch(humidity=50.0, temperature=25.5, pm25=5.0, pm10=10.0, id="abc123", ts=self.ts))
+
+def test_initFile_Ok(self):
+        init = self.m.initFile()
+        self.assertTrue(init)
+```
+
+## test_config.py
+```python
+def test_updateConfig_NoValidJSON(self):
+        self.assertFalse(self.c.updateConfig("Blub"))
+        
+def test_updateConfig_Ok(self):
+        self.assertTrue(self.c.updateConfig("{}"))
+        
+def test_getConfig_Ok(self):
+        conf1 = {'id':"12345",'url':'http://wasdabyx.de:8080','interval':30}
+        conf1 = json.dumps(conf1)
+        conf2 = json.dumps(self.c.getConfig())
+        self.assertEqual(conf1,conf2)
+    
+def test_getId_Ok(self):
+        self.assertEqual("12345",self.c.getId())
+    
+def test_getUrl_Ok(self):
+        self.assertEqual("http://wasdabyx.de:8080",self.c.getUrl())
+        
+def test_getInterval_Ok(self):
+        self.assertEqual(30,self.c.getInterval())
+```
