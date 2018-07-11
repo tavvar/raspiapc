@@ -154,6 +154,19 @@ Tests can be found in the *test* directory. Tests have been implemented for
 
 ## test_measure.py
 ```python
+@classmethod
+def setUp(cls):
+        cls.m = measure.Measure("test_queue.json")
+        cls.ts = time.time()
+        
+@classmethod    
+def tearDown(cls):
+        try:
+            if os.path.isfile(cls.m.filename):
+                os.remove(cls.m.filename)
+        except IOError as io:
+                print("No file to delete")
+
 def test_addFetch_WrongParam(self):
         self.assertFalse(self.m.addFetch(humidity="String", temperature=25.5, pm25=5.0, pm10=10.0, id="abc123", ts=self.ts))
              
@@ -167,6 +180,19 @@ def test_initFile_Ok(self):
 
 ## test_config.py
 ```python
+@classmethod
+def setUp(cls):
+        cls.c = config.Config("test_config")
+        cls.ts = time.time()
+        
+@classmethod    
+def tearDown(cls):
+        try:
+            file = open(cls.c.filename, 'r')
+            os.remove(cls.c.filename)
+        except IOError as io:
+                print("No File To delete")
+
 def test_updateConfig_NoValidJSON(self):
         self.assertFalse(self.c.updateConfig("Blub"))
         
